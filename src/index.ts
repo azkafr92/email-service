@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { Emailer } from './emailer';
+import { Emailer as Gmail } from './gmail';
+import { Emailer as Mailgun } from './mailgun';
 import bodyParser from 'body-parser';
 import cors, { CorsOptions } from 'cors';
 
@@ -47,8 +48,11 @@ app.get('/status', (req: express.Request, res: express.Response) => {
   res.send({ status: 'OK'});
 });
 
-const emailer: Emailer = new Emailer();
-app.post('/email', emailer.sendEmail.bind(emailer));
+const gmail: Gmail = new Gmail();
+app.post('/v1/email', gmail.sendEmail.bind(gmail));
+
+const mailgun: Mailgun = new Mailgun();
+app.post('/v2/email', mailgun.sendEmail.bind(mailgun));
 
 const port = process.env.PORT;
 app.listen(port, () => {
